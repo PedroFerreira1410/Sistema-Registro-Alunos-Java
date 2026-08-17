@@ -7,6 +7,12 @@ public class Aluno {
     private int idade;
     private String curso;
 
+    public Aluno(String nome, int idade, String curso) {
+        this.nome = nome;
+        this.idade = idade;
+        this.curso = curso;
+    }
+
     //Construtor - metodo pra criar objetos e inicializar atributos
     public Aluno(int id, String nome, int idade, String curso){
         this.id = id;

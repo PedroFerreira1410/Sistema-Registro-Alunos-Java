@@ -1,30 +1,21 @@
 package service;
 import model.Aluno;
-import java.util.ArrayList;
+import java.util.List;
+import repository.AlunoRepository;
 
 public class AlunoService
 {
 
-    private int proximoId = 1;
-    private ArrayList<Aluno> alunos;
-    int id;
-
     public Aluno buscarAluno(int id)
     {
-        for(Aluno aluno : alunos)
-        {
-            if(aluno.getId() == id)
-            {
-                return aluno;
-            }
-        }
-        return null;
+        return alunoRepository.buscarPorId(id);
     }
 
     //Construtor
+    private AlunoRepository alunoRepository;
     public AlunoService()
     {
-        alunos = new ArrayList<>();
+        alunoRepository = new AlunoRepository();
     }
 
     public void cadastrarAluno(String nome, int idade, String curso)
@@ -36,17 +27,17 @@ public class AlunoService
             return;
         }
 
-        id = proximoId;
-
-        Aluno aluno = new Aluno(id, nome, idade, curso); //Criando o objeto aluno
-        alunos.add(aluno); //Adicionando esse objeto na lista
+        Aluno aluno = new Aluno(nome, idade, curso); //Criando o objeto aluno
+        alunoRepository.cadastrarAluno(aluno);
 
         System.out.println("Cadastro realizado!");
-        proximoId++;
     }
 
     public void listarAluno()
     {
+
+        List<Aluno> alunos = alunoRepository.listarAlunos();
+
         if(alunos.isEmpty())
         {
             System.out.println("Nenhum aluno cadastrado");
@@ -82,14 +73,16 @@ public class AlunoService
 
     public void atualizarAluno(int id, String nome, int idade, String curso)
     {
-        Aluno aluno = buscarAluno(id);
+        Aluno aluno = alunoRepository.buscarPorId(id);
 
+        //Valida se o aluno existe
         if(aluno == null)
         {
             System.out.println("Aluno não encontrado.");
             return;
         }
 
+        //verifica se os novos dados de nome, idade e curso são válidos
         if (nome.isBlank() || idade <= 0 || curso.isBlank()) {
             System.out.println("Dados inválidos.");
             return;
@@ -99,12 +92,14 @@ public class AlunoService
         aluno.setIdade(idade);
         aluno.setCurso(curso);
 
+        alunoRepository.atualizarAluno(aluno);
+
         System.out.println("Aluno atualizado com sucesso!");
     }
 
     public void excluirAluno(int id)
     {
-        Aluno aluno = buscarAluno(id);
+        Aluno aluno = alunoRepository.buscarPorId(id);
 
         if(aluno == null)
         {
@@ -112,7 +107,7 @@ public class AlunoService
             return;
         }
 
-        alunos.remove(aluno);
+        alunoRepository.excluirAluno(id);
         System.out.println("Aluno excluído com sucesso!");
     }
 
